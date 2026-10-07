@@ -1,10 +1,14 @@
-# Vault Workflow — AI Memory Vault 的個人工作流插件（安裝版發布）
+# Espalio Workflow — AI Memory Vault 的個人工作流插件（安裝版發布）
 
-在 [AI Memory Vault 記憶核心](https://github.com/gabrielchen0314/AI-Memory-Vault-core-releases) 之上，
-加上一整套個人工作流：收工整理、晨報、日／週／月報與排程、Agent 任務、starter pack、橋接 Profile 切換、Ai-Debate。
+Espalio Workflow（工作流插件，原名 Vault Workflow）在 [AI Memory Vault 記憶核心](https://github.com/gabrielchen0314/AI-Memory-Vault-core-releases) 之上，
+加上一整套個人工作流：收工整理、晨報、日／週／月報與排程、Agent 任務、starter pack、橋接 Profile 切換、
+計畫檔的同行審查閘門、多模型辯論（Ai-Debate）。只要記憶功能的人不需要本插件。
 
-> 本 repo 只放**安裝檔與更新資訊**（Release、`latest.json`），不放原始碼。
+> 本 repo 只放**安裝檔與更新資訊**（Release、`latest.json`、使用指南），不放原始碼。
 > 本檔由主 repo 的 `packaging/release-readme.md` 於每次發布時同步，請勿在這裡直接編輯。
+
+> 1.1.0 起產品改名為 Espalio Workflow，只改顯示名：安裝目錄 `C:\Program Files\Vault Workflow`、
+> 開始功能表資料夾、執行檔名都沿用原名。
 
 ---
 
@@ -13,7 +17,7 @@
 | Repo | 內容 | 需要嗎 |
 |---|---|---|
 | [AI-Memory-Vault-core-releases](https://github.com/gabrielchen0314/AI-Memory-Vault-core-releases) | 記憶核心 5.0 起 | ✅ 必裝，**要先裝** |
-| **AI-Memory-Vault-workflow-releases**（本 repo） | Vault Workflow 插件 | 選用 |
+| **AI-Memory-Vault-workflow-releases**（本 repo） | Espalio Workflow 插件 | 選用 |
 | [AI-Memory-Vault-releases](https://github.com/gabrielchen0314/AI-Memory-Vault-releases) | 4.x 舊版，**已凍結、不再更新** | ❌ |
 
 ## 系統需求
@@ -23,16 +27,19 @@
 
 ## 安裝
 
-到 [Releases](../../releases/latest) 下載 `Vault-Workflow-Setup-v<版本>.exe` 並執行，預設裝到 `C:\Program Files\Vault Workflow`。
-保留「登入時自動啟動 vault-workflow daemon」的勾選——插件的常駐服務（`127.0.0.1:8766`）與排程都跑在它裡面。
+到 [Releases](../../releases/latest) 下載 `Vault-Workflow-Setup-v<版本>-<commit>.exe` 並執行，預設裝到 `C:\Program Files\Vault Workflow`。
+保留「登入時自動啟動 Espalio Workflow daemon」的勾選——插件的常駐服務（`127.0.0.1:8766`）與排程都跑在它裡面。
+安裝程式不會把執行檔加進 PATH，命令列要用完整路徑。
 
 裝完之後分兩條路，**只走其中一條**：
 
 ### A. 全新使用者（沒用過 4.x）
 
-1. 開始功能表 → **Vault Workflow → 首次設定**：Vault 路徑、使用者、組織、LLM、starter pack。
+1. 開始功能表 → **Vault Workflow → 首次設定**：Vault 路徑、回應語言、使用者、組織、LLM、starter pack。
    每題按 Enter 保留方括號內的現值，不會動到核心的其他設定。
 2. 編輯器改接插件的 gateway（見下方〈連接編輯器〉）。
+3. 要用收工，在首次設定或之後以 `--setup-section packs` 安裝 `end-of-day` starter pack。
+   全新安裝預設什麼 pack 都不裝，沒裝時收工會明確拒絕執行。
 
 ### B. 從 AI Memory Vault 4.x 升級
 
@@ -96,9 +103,26 @@ command = 'C:\Program Files\Vault Workflow\gateway\vault-workflow-gateway.exe'
 > ⚠️ Claude 桌面 App 與 Antigravity **開著時會把設定檔整份寫回**，改之前要先完全結束（系統匣 → 結束）。
 > 接好後重開編輯器 session，工具清單會出現 `session_bootstrap`、`search_vault` 等插件工具。
 
+Espalio 目前尚未公開發布，公開後會在這裡補上取得方式。
+
+機器由 Espalio 管理時，編輯器改由 Espalio 的單一入口（MCP server 名稱 `espalio`）連線，不需要再加上面的 `ai-memory-vault`；
+這時本插件的工具名帶 `workflow_` 前綴。
+
+多模型辯論是另一個獨立的 MCP server（`C:\Program Files\Vault Workflow\debate\vault-workflow-debate.exe`），
+要用時另外註冊，寫法見 [USAGE.md](USAGE.md)。
+
 ## 裝好之後
 
-- **改單一段設定**：`& "C:\Program Files\Vault Workflow\vault-workflow.exe" --setup-section user`（`user`／`org`／`llm`／`packs`）
+- **改單一段設定**：`& "C:\Program Files\Vault Workflow\vault-workflow.exe" --setup-section user`
+  （可用 `vault`／`user`／`org`／`llm`／`language`／`packs`）
+- **收工、晨報與 Vault 自動提交的排程**（安裝時不會自動註冊；從 4.x 遷移的機器由遷移腳本改接，不用重新註冊）：
+
+  ```powershell
+  & "C:\Program Files\Vault Workflow\scripts\register-vault-tasks.ps1"
+  ```
+
+  機器由 Espalio 管理時，收工、晨報、自動提交已由 Espalio 排程，不要再執行 `register-vault-tasks.ps1`，否則會重複執行。
+
 - **排程管理**：開始功能表 → Vault Workflow → 排程管理
 - **選用排程**（清殘留 session、資源監看等，預設不裝）：
 
@@ -111,9 +135,14 @@ command = 'C:\Program Files\Vault Workflow\gateway\vault-workflow-gateway.exe'
 插件每 6 小時檢查一次本 repo 的 `latest.json`，有新版時跳通知；也可以手動執行
 `& "C:\Program Files\Vault Workflow\vault-workflow.exe" --apply-update`。插件與核心的更新各自獨立。
 
+## 文件
+
+- **[USAGE.md](USAGE.md)**：完整使用指南（首次設定、各編輯器設定、收工與晨報、工具一覽、命令列、排程、starter pack、設定檔、常見問題）
+- 每一版改了什麼：看該版 [Release](../../releases) 頁面的說明
+
 ## 解除安裝
 
-從「設定 → 應用程式」解除安裝 Vault Workflow。daemon 的兩支常駐排程會移除；其他還指向插件目錄的排程
+從「設定 → 應用程式」解除安裝 Espalio Workflow。daemon 的兩支常駐排程會移除；其他還指向插件目錄的排程
 （收工、晨報、git 自動提交…）會被**停用**而不是刪除，清單寫在
 `%APPDATA%\AI-Memory-Vault\workflow-uninstall-disabled-tasks.txt`，重裝後可以再啟用。
 你的筆記與設定（`%APPDATA%\AI-Memory-Vault\`、Vault 資料夾）不會被刪。
