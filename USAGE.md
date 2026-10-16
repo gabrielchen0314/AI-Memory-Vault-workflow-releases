@@ -307,7 +307,7 @@ API 金鑰不放設定檔，設定檔只記環境變數的名稱。
 | `events.end_of_day_skill` | 空 | 收工要執行的 skill。空的時候收工拒絕執行 |
 | `packs.installed` | `[]` | 已安裝的 starter pack |
 | `inventory.project_roots` | `{}` | `"組織/專案"` → 本機專案資料夾。要登記到專案資料夾本身，不要登記上層目錄 |
-| `inventory.directory_aliases` | `{}` | 本機路徑 → 組織與專案。資料夾名稱與 Vault 專案名對不上時用 |
+| `inventory.directory_aliases` | `{}` | 本機路徑 → 組織與專案，只對這台機器有效。跨機器共用改在專案 `status.md` 寫 `folders: [資料夾名稱]`，或用 `project(action="link_folder")` |
 | `agent_task.disabled_task_ids` | `[]` | 這台機器不自動排程的 Agent 任務 |
 
 從舊版升上來的機器，另外檢查這三個鍵：`llm.locality_keywords`（補上專案代號等隱私關鍵字）、
