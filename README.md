@@ -16,14 +16,14 @@ Espalio Workflow（工作流插件，原名 Vault Workflow）在 [AI Memory Vaul
 
 | Repo | 內容 | 需要嗎 |
 |---|---|---|
-| [AI-Memory-Vault-core-releases](https://github.com/gabrielchen0314/AI-Memory-Vault-core-releases) | 記憶核心 5.0 起 | ✅ 必裝，**要先裝** |
+| [AI-Memory-Vault-core-releases](https://github.com/gabrielchen0314/AI-Memory-Vault-core-releases) | 記憶核心 5.2.0 起（插件 1.4.0 需要） | ✅ 必裝，**要先裝** |
 | **AI-Memory-Vault-workflow-releases**（本 repo） | Espalio Workflow 插件 | 選用 |
 | [AI-Memory-Vault-releases](https://github.com/gabrielchen0314/AI-Memory-Vault-releases) | 4.x 舊版，**已凍結、不再更新** | ❌ |
 
 ## 系統需求
 
 - Windows 10 以上、64 位元
-- **記憶核心 AI Memory Vault 5.0 以上**已安裝並在執行（插件的安裝檔會檢查，沒有或太舊就拒絕安裝）
+- **記憶核心 AI Memory Vault 5.2.0 以上**已安裝並在執行（插件 1.4.0 需要；插件的安裝檔會檢查，沒有或太舊就拒絕安裝）。升級插件時核心要同一批升到 5.2.0
 
 ## 安裝
 
@@ -43,7 +43,7 @@ Espalio Workflow（工作流插件，原名 Vault Workflow）在 [AI Memory Vaul
 
 ### B. 從 AI Memory Vault 4.x 升級
 
-先裝好核心 5.0 與本插件，然後**完全結束 Claude 桌面 App 與 Antigravity**，從外部開的 PowerShell 執行一鍵遷移：
+先裝好核心 5.2.0 與本插件，然後**完全結束 Claude 桌面 App 與 Antigravity**，從外部開的 PowerShell 執行一鍵遷移：
 
 ```powershell
 # 先預覽（什麼都不改）
@@ -158,7 +158,7 @@ Espalio 目前尚未公開發布，公開後會在這裡補上取得方式。
 App 開著時會把記憶體裡的舊設定寫回。完全結束後再改，或重跑遷移腳本。
 
 **Q：插件安裝檔說找不到記憶核心？**
-先到 [AI-Memory-Vault-core-releases](https://github.com/gabrielchen0314/AI-Memory-Vault-core-releases/releases/latest) 安裝核心 5.0 以上。
+先到 [AI-Memory-Vault-core-releases](https://github.com/gabrielchen0314/AI-Memory-Vault-core-releases/releases/latest) 安裝核心 5.2.0 以上。
 
 ## 問題回報
 
