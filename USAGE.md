@@ -28,8 +28,8 @@ $Wf = "C:\Program Files\Vault Workflow\vault-workflow.exe"   # 安裝時改過�
 
 ## 1. 安裝
 
-需求：Windows 10 以上、64 位元；記憶核心 AI Memory Vault **5.0 以上**已安裝並在執行。
-插件的安裝檔會檢查核心版本，沒裝或低於 5.0 就拒絕安裝。
+需求：Windows 10 以上、64 位元；記憶核心 AI Memory Vault **5.2.0 以上**已安裝並在執行（插件 1.4.0 起；1.0 起需要 5.0 以上）。
+插件的安裝檔會檢查核心版本，沒裝或低於所需版本就拒絕安裝。
 
 執行 `Vault-Workflow-Setup-v<版本>-<commit>.exe`，預設安裝到 `C:\Program Files\Vault Workflow`。
 **保留「登入時自動啟動 Espalio Workflow daemon」的勾選**——插件的常駐服務（`127.0.0.1:8766`）與排程都跑在它裡面，
@@ -65,7 +65,7 @@ $Wf = "C:\Program Files\Vault Workflow\vault-workflow.exe"   # 安裝時改過�
 
 ### B. 從 AI Memory Vault 4.x 升級
 
-先裝好核心 5.0 與本插件，然後**完全結束 Claude 桌面 App 與 Antigravity**，從外部開的 PowerShell 執行一鍵遷移：
+先裝好核心 5.2.0 與本插件，然後**完全結束 Claude 桌面 App 與 Antigravity**，從外部開的 PowerShell 執行一鍵遷移：
 
 ```powershell
 # 先預覽（什麼都不改）
@@ -79,6 +79,14 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Program Files\Vault Work
 
 - **結束碼 2**：有設定檔因為 App 還開著而先跳過了。關掉那個 App 後重跑即可，已改好的不會重複改。
 - 不需要再跑「首次設定」，遷移會保留你原本的設定。
+
+### C. 升級到 1.4.0
+
+- 要與記憶核心 **5.2.0 同一批升級**（資料目錄解析與設定結構有變）；只升插件或只升核心都不支援。
+- 核心 5.2.0 起不再轉發個人工作流指令：仍透過 `vault-cli` 呼叫收工、`githook` 等的排程或腳本，要改呼叫 `vault-workflow.exe`；post-commit 請執行一次 `vault-workflow githook install`。
+- starter pack 改版時，你改過的檔不會被覆蓋，新版另存成同目錄的 `*.new.md`，自行合併。
+- 排程 `Vault-AutoCommit-OnLock` 指向的 `vault-git-autocommit.ps1` 必須是帶 `# lock-protocol: 1` 的版本，內容遷移才會執行；安裝新版會更新安裝目錄那份，若排程指向其他位置的腳本要一併更新。
+- 安裝後，在 Espalio 重新核准這個配件（工具與控制操作有變更）。
 
 ## 3. 接上編輯器
 
@@ -225,6 +233,7 @@ knowledge_pipeline(action="check_pending")                           # 哪些對
 | `& $Wf --list-tasks` | 列出可執行的排程任務 |
 | `& $Wf cli` | 互動式命令列；`--menu` 為選單模式 |
 | `& $Wf --usage-report --days 7` | 近 7 天的 AI 用量統計（唯讀） |
+| `& $Wf --usage-report --items` | 子代理單項成本分析（本期對前一個等長區間；沒給時間窗參數時預設上一個完整 ISO 週；可加 `--days N` 或 `--since … [--until …]`；`--json` 可用） |
 | `& $Wf --check-update` ／ `--apply-update` | 檢查新版；下載並安裝 |
 | `& $Wf --version` | 版本 |
 
@@ -232,7 +241,7 @@ knowledge_pipeline(action="check_pending")                           # 哪些對
 
 排程有三種，各管各的。
 
-**常駐服務內建的排程**：每日摘要（22:00）、近期脈絡（22:30）、每 4 小時的對話提取、每週一的週報與 AI 週報、
+**常駐服務內建的排程**：每日摘要（22:00）、近期脈絡（22:30）、每 4 小時的對話提取、每週一的週報與 AI 週報、每週一 09:30 的子代理單項成本週報（`weekly-item-cost`）、
 每月 1 日的月報、AI 月報、晉升掃描、架構檢查與月度復盤等。個別任務可在設定檔的
 `extensions.workflow.scheduler.jobs.<任務 id>` 關掉（`"enabled": false`）或改時間（`"cron"`），改完要重啟常駐服務。
 
@@ -248,7 +257,7 @@ knowledge_pipeline(action="check_pending")                           # 哪些對
 |---|---|---|
 | `Vault-EndOfDay-Daily` | 每天 19:00 | 收工 |
 | `Vault-MorningBrief-Daily` | 每天 08:30 | 晨報 |
-| `Vault-AutoCommit-OnLock` | 鎖定工作站時，以及每 2 小時 | 提交、拉取並推送 Vault 的差異（Vault 是 git repo 時才有用） |
+| `Vault-AutoCommit-OnLock` | 鎖定工作站時，以及每 2 小時 | 提交、拉取並推送 Vault 的差異（Vault 是 git repo 時才有用）。兩台機器同寫的晨報、每日總結、handoff 等衝突時以 `merge=union` 自動合併 |
 
 從 4.x 遷移的機器，這些排程由遷移腳本改接插件，不用重新註冊。
 機器由 Espalio 管理時，收工、晨報、自動提交已由 Espalio 排程，不要再執行 `register-vault-tasks.ps1`，否則會重複執行。
@@ -258,6 +267,8 @@ knowledge_pipeline(action="check_pending")                           # 哪些對
 ```powershell
 & "C:\Program Files\Vault Workflow\scripts\register-optional-tasks.ps1" -List
 ```
+
+其中 `-ClaudeTempCleanup` 註冊每週一 12:30 的清理，刪除 `%TEMP%\claude` 底下超過 5 天沒動的暫存。
 
 開始功能表的「排程管理」可以查看排程、立即執行一次、看 log 與診斷；新增與刪除排程需要系統管理員。
 
@@ -362,7 +373,7 @@ claude mcp add --scope user ai-debate -- "C:\Program Files\Vault Workflow\debate
 App 開著時會把記憶體裡的舊設定寫回。完全結束後再改，或重跑遷移腳本。
 
 **Q：插件安裝檔說找不到記憶核心？**
-先到 [AI-Memory-Vault-core-releases](https://github.com/gabrielchen0314/AI-Memory-Vault-core-releases/releases/latest) 安裝核心 5.0 以上。
+先到 [AI-Memory-Vault-core-releases](https://github.com/gabrielchen0314/AI-Memory-Vault-core-releases/releases/latest) 安裝核心 5.2.0 以上。
 
 **Q：收工一執行就結束，什麼都沒做？**
 還沒安裝 `end-of-day` starter pack。執行 `& $Wf --setup-section packs`。
@@ -372,6 +383,10 @@ App 開著時會把記憶體裡的舊設定寫回。完全結束後再改，或�
 
 **Q：新增的 Agent 任務沒有被排進去？**
 新增、改時間或開關之後要重啟常駐服務。
+
+**Q：autocommit 排程的紀錄裡出現結束碼，各代表什麼？**
+0 完成或刻意不動（含內容遷移進行中本輪跳過）；1 commit 失敗或找不到設定；2 遠端倒退；3 分岔且 merge 衝突；
+4 暫存區被拒；5 同步凍結；6 閘門不可用（為安全而停）；7 跨機目錄版面不一致；8 root 唯讀；9 這個 repo 不是同步目標。
 
 **Q：命令以結束碼 75 結束？**
 記憶核心沒在服務（沒啟動，或正在啟動、重啟）。先確認核心在執行再重試。
