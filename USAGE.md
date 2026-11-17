@@ -204,7 +204,7 @@ knowledge_pipeline(action="check_pending")                           # 哪些對
 | 進場 | `session_bootstrap` | 一次取得這個 session 需要的脈絡 |
 | | `dispatch_agent`、`load_skill` | 載入 Agent 行為定義、讀 Skill 全文 |
 | | `agent_admin`、`skill_admin` | Agent 與 Skill 的清單與草稿 |
-| | `select_model`、`jarvis_status` | 模型層級建議、外部觀察系統狀態 |
+| | `select_model` | 模型層級建議 |
 | 記憶 | `search_vault`、`grep_vault`、`read_note` | 語意搜尋、精確搜尋、讀筆記 |
 | | `write_note`、`edit_note`、`sync_vault` | 寫入、局部修改、同步索引 |
 | | `search_instincts`、`instinct` | 搜尋直覺卡片、卡片的建立／確認／糾正／晉升 |
