@@ -1,15 +1,15 @@
 {
   "component": "espalio-workflow",
-  "download_url": "https://github.com/gabrielchen0314/AI-Memory-Vault-workflow-releases/releases/download/vault-workflow-v1.5.0/Vault-Workflow-Setup-v1.5.0-cb0a007.exe",
-  "installer": "Vault-Workflow-Setup-v1.5.0-cb0a007.exe",
-  "published": "2026-11-05T14:23:20Z",
-  "sha256": "d6637882dc93dd212b429851a118a7eea4cc47221247581313357744e373dbd1",
+  "download_url": "https://github.com/gabrielchen0314/AI-Memory-Vault-workflow-releases/releases/download/vault-workflow-v1.6.1/Vault-Workflow-Setup-v1.6.1-76407c3.exe",
+  "installer": "Vault-Workflow-Setup-v1.6.1-76407c3.exe",
+  "published": "2026-11-17T10:45:55Z",
+  "sha256": "699617313f92832386b52554de37b6c1f41646f03d2485fc880c583f7e8c3f1c",
   "signatures": [
     {
       "alg": "ed25519",
-      "key_id": "ed25519:d5f447cc71e22201",
-      "sig": "3304d9fc109f4d6b03597f037606e6491f158f9c5e08937b5ae5b5e12e80a501cdb559a7db1e3a21522b18e79e87668ae728a58480ed30af44ba4fa89cbc870f"
+      "key_id": "ed25519:5ba28d9316ff1243",
+      "sig": "92922cb4b2b6563f44a593a44453853a7a49de0870537647fd107b3b0ac93ce2b8e4d86df439ebe605fe563566fb05172e58ecaedba48783caf7c0fab5a2b903"
     }
   ],
-  "version": "1.5.0"
+  "version": "1.6.1"
 }
